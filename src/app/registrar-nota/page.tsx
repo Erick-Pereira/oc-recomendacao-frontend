@@ -24,7 +24,7 @@ export default function RegistrarNota() {
   ]);
   const [frete, setFrete] = useState(0);
 
-  const API_URL = "https://api.exemplo.com/dados";
+  const API_URL = "http://127.0.0.1:8000";
   const STORAGE_KEY = "dadosApi";
 
   useEffect(() => {
