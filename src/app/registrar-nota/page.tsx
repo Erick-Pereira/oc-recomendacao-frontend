@@ -53,7 +53,7 @@ export default function RegistrarNota() {
           JSON.stringify({ data, dataAtualizacao: new Date().toISOString() })
         );
       } catch (err) {
-        // Trate o erro se necessário
+        console.error(err);
       }
     };
     fetchAndStore();
@@ -62,11 +62,14 @@ export default function RegistrarNota() {
   const handleProdutoChange = (
     index: number,
     field: keyof Produto,
-    value: any
+    value: string | number
   ) => {
     const novosProdutos = [...produtos];
-    novosProdutos[index][field] =
-      field === "quantidade" || field === "valor" ? Number(value) : value;
+    if (field === "quantidade" || field === "valor") {
+      novosProdutos[index][field] = Number(value) as Produto[typeof field];
+    } else {
+      novosProdutos[index][field] = value as Produto[typeof field];
+    }
     setProdutos(novosProdutos);
   };
 
