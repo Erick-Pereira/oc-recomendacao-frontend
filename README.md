@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PROJETO FRONT END PARA CÁLCULO DE REDE BAYESIANA ATRAVÉS DE ORDENS DE COMPRA
 
-## Getting Started
+Este repositório comporta o projeto frontend do sistema de recomendação de forma de pagamento para ordens de compra através de um cálculo de rede bayesiana. Este projeto se complementa com uma projeto backend que disponibiliza APIs, acessível no link: <https://github.com/vssCOSTA/TrabalhoClaudio>
 
-First, run the development server:
+### COMO INSTALAR E EXECUTAR O PROJETO
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Requisitos: 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Node v20 ou superior
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+> **Faça um clone ou baixe o conteúdo do repositório**:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`git clone https://github.com/Erick-Pereira/oc-recomendacao-frontend `
 
-## Learn More
+> **Abra o projeto em uma IDE e execute os comando necessários**:
 
-To learn more about Next.js, take a look at the following resources:
+Instala as dependências necessárias:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`npm install`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Após, siga os passos descritos no README do projeto backend: <https://github.com/vssCOSTA/TrabalhoClaudio>
 
-## Deploy on Vercel
+Após, inicie o servidor de desenvolvimento Next.js
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`npm run dev`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Isso irá criar um servidor local para a execução da interface gráfica web em <http://localhost:3000> e estará pronto para o uso.
+
+### COMO UTILIZAR O PROJETO
+
+A interface gráfica conta com campos para preenchimento de um ordem de compra. Ao preencher todos os campos na ordem, ao inserir o valor do frete, é realizada uma requisição para um endpoint que irá realizar o cálculo da rede bayesiana e retornar a forma de pagamento recomendada abaixo da seleção da mesma. O usuário então poderá vizualisar e decidir com qual forma de pagamento seguir. Ao clicar para registrar a ordem de compra, ela será enviada ao banco de dados para ser integrada aos novos cálculos
