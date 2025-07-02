@@ -22,7 +22,8 @@ export default function RegistrarNota() {
   const [produtos, setProdutos] = useState<Produto[]>([
     { codigo: "", quantidade: 1, valor: 0 },
   ]);
-  const [frete, setFrete] = useState(0);
+  const [frete, setFrete] = useState("");
+  const [recomendado, setRecomendado] = useState<string | null>(null);
 
   const API_URL = "http://127.0.0.1:8000";
   const STORAGE_KEY = "dadosApi";
@@ -39,9 +40,9 @@ export default function RegistrarNota() {
             const diffDias =
               (agora.getTime() - dataArmazenada.getTime()) /
               (1000 * 60 * 60 * 24);
-            if (diffDias <= 7) return; 
+            if (diffDias <= 7) return;
           }
-        } catch {}
+        } catch { }
       }
       // Buscar da API
       try {
@@ -84,19 +85,60 @@ export default function RegistrarNota() {
 
   const total =
     produtos.reduce((acc, p) => acc + p.quantidade * p.valor, 0) +
-    Number(frete);
+    (frete !== "" ? Number(frete) : 0);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (
+      numeroOC &&
+      fornecedor &&
+      produtos.every((p) => p.codigo && p.quantidade > 0 && p.valor >= 0) &&
+      frete !== "" && Number(frete) >= 0
+    ) {
+      const payload = {
+        nro: Number(numeroOC),
+        fornecedor: Number(fornecedor),
+        total: Number(total),
+        frete: Number(frete),
+        qtde: produtos.reduce((acc, p) => acc + p.quantidade, 0),
+      };
+      fetch(`${API_URL}/oc/predict`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+        .then((resp) => resp.json())
+        .then((data) => setRecomendado(data.recomendado))
+        .catch(() => setRecomendado(null));
+    } else {
+      setRecomendado(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [numeroOC, fornecedor, produtos, frete, total]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aqui você pode enviar os dados para uma API ou processar como desejar
-    alert(
-      "Nota registrada com sucesso!\n" +
-        JSON.stringify(
-          { numeroOC, fornecedor, formaPagamento, produtos, frete, total },
-          null,
-          2
-        )
-    );
+
+    const payload = {
+      nro: Number(numeroOC),
+      fornecedor: Number(fornecedor),
+      qtde: produtos.reduce((acc, p) => acc + p.quantidade, 0),
+      total: Number(total),
+      frete: Number(frete),
+      forma_pagamento: formaPagamento,
+    };
+
+    try {
+      const resp = await fetch(`${API_URL}/oc/confirm`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!resp.ok) throw new Error("Erro ao enviar para o backend");
+      alert("Nota registrada com sucesso!");
+    } catch (err) {
+      alert("Erro ao registrar nota!");
+      console.error(err);
+    }
   };
 
   return (
@@ -181,29 +223,7 @@ export default function RegistrarNota() {
               </label>
             </div>
           </div>
-          <div>
-            <label style={{ color: "#334155", fontWeight: 500 }}>
-              Forma de pagamento
-              <select
-                value={formaPagamento}
-                onChange={(e) => setFormaPagamento(e.target.value)}
-                style={{
-                  width: "100%",
-                  color: "#222",
-                  background: "#f1f5f9",
-                  border: "1px solid #cbd5e1",
-                  borderRadius: 8,
-                  padding: 8,
-                  marginTop: 4,
-                  fontSize: 15,
-                }}
-              >
-                {paymentOptions.map((opt) => (
-                  <option key={opt}>{opt}</option>
-                ))}
-              </select>
-            </label>
-          </div>
+
           <div>
             <label
               style={{
@@ -367,7 +387,7 @@ export default function RegistrarNota() {
                 min={0}
                 step={0.01}
                 value={frete}
-                onChange={(e) => setFrete(Number(e.target.value))}
+                onChange={(e) => setFrete(e.target.value)}
                 style={{
                   width: "100%",
                   color: "#222",
@@ -393,6 +413,41 @@ export default function RegistrarNota() {
               <span style={{ color: "#16a34a" }}>R$ {total.toFixed(2)}</span>
             </div>
           </div>
+          <div>
+            <label style={{ color: "#334155", fontWeight: 500 }}>
+              Forma de pagamento
+              <select
+                value={formaPagamento}
+                onChange={(e) => setFormaPagamento(e.target.value)}
+                style={{
+                  width: "100%",
+                  color: "#222",
+                  background: "#f1f5f9",
+                  border: "1px solid #cbd5e1",
+                  borderRadius: 8,
+                  padding: 8,
+                  marginTop: 4,
+                  fontSize: 15,
+                }}
+              >
+                {paymentOptions.map((opt) => (
+                  <option key={opt}>{opt}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+          {recomendado && (
+            <div
+              style={{
+                marginTop: 16,
+                textAlign: "center",
+                color: "#2563eb",
+                fontWeight: 600,
+              }}
+            >
+              Forma de pagamento recomendada: {recomendado}
+            </div>
+          )}
           <button
             type="submit"
             style={{
