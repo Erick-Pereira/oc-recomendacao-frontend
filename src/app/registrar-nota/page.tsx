@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from "react";
 
 const paymentOptions = [
-  "A vista",
+  "À vista",
   "10 dias",
   "30 dias",
-  "em 2x iguais",
-  "em 3x iguais",
+  "Em 2x iguais",
+  "Em 3x iguais",
 ];
 
 interface Produto {
@@ -175,7 +175,7 @@ export default function RegistrarNota() {
             letterSpacing: 1,
           }}
         >
-          Registrar Nota de Compra
+          Nova Ordem de Compra
         </h2>
         <form
           onSubmit={handleSubmit}
@@ -204,7 +204,7 @@ export default function RegistrarNota() {
             </div>
             <div style={{ flex: 2 }}>
               <label style={{ color: "#334155", fontWeight: 500 }}>
-                Fornecedor
+                Código Fornecedor
                 <input
                   required
                   value={fornecedor}
@@ -261,12 +261,12 @@ export default function RegistrarNota() {
                     <th
                       style={{ color: "#334155", fontWeight: 600, padding: 8 }}
                     >
-                      Quantidade
+                      Quant.
                     </th>
                     <th
                       style={{ color: "#334155", fontWeight: 600, padding: 8 }}
                     >
-                      Valor
+                      Valor Unt.
                     </th>
                     <th style={{ width: 60, borderTopRightRadius: 8 }}></th>
                   </tr>
@@ -381,7 +381,7 @@ export default function RegistrarNota() {
           </div>
           <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
             <label style={{ color: "#334155", fontWeight: 500, flex: 1 }}>
-              Frete
+              Valor do Frete
               <input
                 type="number"
                 min={0}
@@ -464,7 +464,7 @@ export default function RegistrarNota() {
               letterSpacing: 1,
             }}
           >
-            Registrar Nota
+            Registrar Ordem de Compra
           </button>
         </form>
       </div>
